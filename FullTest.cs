@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,57 +33,59 @@ namespace MySeleniumTests
         public void MyFirstFullTest()
         {            
             driver.Navigate().GoToUrl("https://labirint.ru/");
-            //Наводим на пункт "Книги" (локатор: booksMenu)
             var booksMenu = By.XPath("//*[@data-toggle='header-genres']"); 
             new Actions(driver).MoveToElement(driver.FindElement(booksMenu)).Build().Perform();
 
             var allBooks = By.XPath("//div[@id='header-genres']//a[@href='/books/']");
-            wait.Until(ExpectedConditions.ElementIsVisible(allBooks)); //Дожидаемся показа "Все книги" (локатор: allBooks)            
-            new Actions(driver).Click(driver.FindElement(allBooks)).Build().Perform(); //Кликаем по "Все книги" (локатор: allBooks)            
-            Assert.AreEqual("https://www.labirint.ru/books/", driver.Url, "Не перешел на страницу https://www.labirint.ru/books/"); //Проверяем, что перешли на url https://www.labirint.ru/books/
+            wait.Until(ExpectedConditions.ElementIsVisible(allBooks)); 
+            driver.FindElement(allBooks).Click();
+            Assert.AreEqual("https://www.labirint.ru/books/", driver.Url, "Не перешел на страницу https://www.labirint.ru/books/"); 
 
-            var allBooklnCart = By.XPath("//div[contains(@class, 'product ')]//a[contains(@id, 'buy')]"); //поправил, чтобы class тоже искался по contains
-            new Actions(driver).MoveToElement(driver.FindElement(allBooklnCart)).Click(driver.FindElement(allBooklnCart)).Build().Perform();            
-            
-            var issueOrder = By.XPath("(//a[contains(@class,'buy-link')][contains(@class,'btn-more')])[1]"); //оформить
-            new Actions(driver).MoveToElement(driver.FindElement(issueOrder)).Click(driver.FindElement(issueOrder)).Build().Perform();
+            var allBooklnCart = By.XPath("//div[contains(@class, 'product ')]//a[contains(@id, 'buy')]"); 
+            driver.FindElement(allBooklnCart).Click();
 
-            var beginOrder = By.CssSelector("input#basket-default-begin-order"); //Начать оформление
+            var issueOrder = By.XPath("(//a[contains(@class,'buy-link')][contains(@class,'btn-more')])[1]"); 
+            new Actions(driver)
+                .MoveToElement(driver.FindElement(issueOrder))
+                .Click(driver.FindElement(issueOrder))
+                .Build()
+                .Perform();
+
+            var beginOrder = By.CssSelector("input#basket-default-begin-order"); 
             wait.Until(ExpectedConditions.ElementIsVisible(beginOrder));
-            new Actions(driver).Click(driver.FindElement(beginOrder)).Build().Perform();
+            driver.FindElement(beginOrder).Click();
 
             var chooseCourierDelivery = By.CssSelector("label.b-radio-delivery-courier span.b-radio-e-bg");
-            new Actions(driver).Click(driver.FindElement(chooseCourierDelivery)).Build().Perform();
+            driver.FindElement(chooseCourierDelivery).Click();
 
             var city = By.CssSelector("div.js-dlform-wrap input.js-district");
-            new Actions(driver).SendKeys(driver.FindElement(city), "Qwqqqqqq").Build().Perform();
-            new Actions(driver).SendKeys(Keys.Tab).Build().Perform();
+            driver.FindElement(city).SendKeys("Qqqqqqq");
+            driver.FindElement(city).SendKeys(Keys.Tab);
             var cityError = By.CssSelector("span[id*=jsdistrict] span.b-form-error-e-text"); 
             Assert.IsTrue(driver.FindElement(cityError).Displayed, "Сообщение об ошибке, при вводе некорретных данных в поле город не показывается");
             driver.FindElement(city).Clear();
-
-            new Actions(driver).SendKeys(driver.FindElement(city), "Екатеринбург").Build().Perform();            
+            driver.FindElement(city).SendKeys("Екатеринбург");
             var suggestedCity = By.XPath("//a[contains(@class, 'suggests-item-link')]//*[contains(@class,'suggests-item-txt')]"); 
-            new Actions(driver).Click(driver.FindElement(suggestedCity)).Build().Perform();
+            driver.FindElement(suggestedCity).Click();
             
             var street = By.CssSelector("div.js-dlform-wrap input.js-street"); 
-            new Actions(driver).SendKeys(driver.FindElement(street), "Тестовая").Build().Perform();
+            driver.FindElement(street).SendKeys("Тестовая");
 
             var building = By.CssSelector("div.js-dlform-wrap input.js-building"); 
-            new Actions(driver).SendKeys(driver.FindElement(building), "11").Build().Perform();
+            driver.FindElement(building).SendKeys("7");
 
             var flat = By.CssSelector("div.js-dlform-wrap input[name*=flat]"); 
-            new Actions(driver).SendKeys(driver.FindElement(flat), "716").Build().Perform();
+            driver.FindElement(flat).SendKeys("716"); 
 
             var loadingPanel = By.CssSelector("loading-panel");
             wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loadingPanel));
 
             var dataHandler = By.CssSelector("[data-handler=selectDay]:nth-child(5)");
-            new Actions(driver).Click(driver.FindElement(dataHandler)).Build().Perform();
+            driver.FindElement(dataHandler).Click();
             wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loadingPanel));
 
             var confirm = By.XPath("//div[contains(@class, 'js-dlform-wrap')]//input[@type='submit']"); 
-            new Actions(driver).MoveToElement(driver.FindElement(confirm)).Click().Build().Perform();
+            driver.FindElement(confirm).Click();
 
             var courierDeliveryLightbox = By.CssSelector("div.js-dlform-wrap");   
             Assert.IsFalse(driver.FindElement(courierDeliveryLightbox).Displayed, "Отображается окно курьерской доставки");
@@ -137,5 +139,3 @@ namespace MySeleniumTests
         }
     }
 }
-
-
