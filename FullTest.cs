@@ -47,7 +47,7 @@ namespace MySeleniumTests
             var issueOrder = By.XPath("(//a[contains(@class,'buy-link')][contains(@class,'btn-more')])[1]"); 
             new Actions(driver)
                 .MoveToElement(driver.FindElement(issueOrder))
-                .Click(driver.FindElement(issueOrder))
+                .Click()
                 .Build()
                 .Perform();
 
@@ -59,8 +59,7 @@ namespace MySeleniumTests
             driver.FindElement(chooseCourierDelivery).Click();
 
             var city = By.CssSelector("div.js-dlform-wrap input.js-district");
-            driver.FindElement(city).SendKeys("Qqqqqqq");
-            driver.FindElement(city).SendKeys(Keys.Tab);
+            driver.FindElement(city).SendKeys("Qqqqqqq" + Keys.Tab);           
             var cityError = By.CssSelector("span[id*=jsdistrict] span.b-form-error-e-text"); 
             Assert.IsTrue(driver.FindElement(cityError).Displayed, "Сообщение об ошибке, при вводе некорретных данных в поле город не показывается");
             driver.FindElement(city).Clear();
@@ -80,8 +79,7 @@ namespace MySeleniumTests
             var loadingPanel = By.CssSelector("loading-panel");
             wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loadingPanel));
 
-            var dataHandler = By.CssSelector("[data-handler=selectDay]:nth-child(5)");
-            driver.FindElement(dataHandler).Click();
+            (driver as IJavaScriptExecutor).ExecuteScript($"$('.hasDatepicker').datepicker('setDate','{DateTime.Today.AddDays(8).ToString("dd.MM.yyyy")}')");            
             wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loadingPanel));
 
             var confirm = By.XPath("//div[contains(@class, 'js-dlform-wrap')]//input[@type='submit']"); 
