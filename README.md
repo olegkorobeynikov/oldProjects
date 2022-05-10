@@ -1,2 +1,1 @@
-# seleniumTestEdu
-Try write selenium tests
+# Project contains few different old projects
